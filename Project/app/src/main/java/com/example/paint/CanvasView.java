@@ -11,6 +11,7 @@ import android.graphics.Point;
 
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 
 
@@ -42,6 +43,7 @@ public class CanvasView extends View {
     {
         paintLine.setAntiAlias(true);
         paintLine.setColor(Color.BLACK);
+        paintLine.setStyle(Paint.Style.STROKE);
         paintLine.setStrokeWidth(7);
         paintLine.setStrokeCap(Paint.Cap.ROUND);
     }
@@ -57,8 +59,104 @@ public class CanvasView extends View {
     @Override
     protected void onDraw(Canvas canvas)
     {
-        super.onDraw(canvas);
-        canvas.drawCircle(getMeasuredWidth()/2, getMeasuredHeight()/2, 78, paintLine);
+        canvas.drawBitmap(bitmap, 0, 0, paintToScreen);
+
+        for(Integer key: pathMap.keySet())
+        {
+            canvas.drawPath(pathMap.get(key),paintLine);
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        int action = event.getActionMasked();
+        int actionIndex = event.getActionIndex();
+
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_UP)
+        {
+            touchBegin(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
+        }
+        else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
+        {
+            touchStopped(event.getPointerId(actionIndex));
+        }
+        else
+        {
+            touchMoved(event);
+        }
+
+        invalidate();
+        return true;
+    }
+
+    private void touchBegin(float x, float y, int pointerID)
+    {
+        Path path;
+        Point point;
+
+        if(pathMap.containsKey(pointerID))
+        {
+            path = pathMap.get(pointerID);
+            point = previousPointMap.get(pointerID);
+        }
+        else
+        {
+            path = new Path();
+            pathMap.put(pointerID, path);
+            point = new Point();
+            previousPointMap.put(pointerID, point);
+        }
+
+        path.moveTo(x,y);
+        point.x = (int) x;
+        point.y = (int) y;
+    }
+
+    private void touchStopped(int pointerID)
+    {
+        Path path = pathMap.get(pointerID);
+        bitmapCanvas.drawPath(path, paintLine);
+        path.reset();
+    }
+
+
+
+    private void touchMoved(MotionEvent event)
+    {
+        for(int i = 0; i < event.getPointerCount(); i++)
+        {
+            int pointerID = event.getPointerId(i);
+            int pointerIndex = event.findPointerIndex(pointerID);
+
+            if(pathMap.containsKey(pointerID))
+            {
+                float newX = event.getX(pointerIndex);
+                float newY = event.getY(pointerIndex);
+
+                Path path = pathMap.get(pointerID);
+                Point point = previousPointMap.get(pointerID);
+
+                float dx = Math.abs(newX - point.x);
+                float dy = Math.abs(newY - point.y);
+
+                if(dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE)
+                {
+                    path.quadTo(point.x, point.y, (newX + point.x)/2, (newY + point.y)/2);
+
+                    point.x = (int) newX;
+                    point.y = (int) newY;
+                }
+            }
+        }
+    }
+    
+    public void clearMap()
+    {
+        pathMap.clear();
+        previousPointMap.clear();
+        bitmap.eraseColor(Color.WHITE);
+        invalidate();
     }
 
 }
