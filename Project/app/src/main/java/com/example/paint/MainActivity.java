@@ -1,42 +1,42 @@
 package com.example.paint;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView tv1;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        showPreviousDrawings();
-         tv1 = (TextView)findViewById(R.id.pageTitle);
-    }
-
-    private void showPreviousDrawings()
-    {
+        setTitle("Previous Drawings");
 
     }
 
-    public void blankCanvasButton(View myView)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
     {
-       setContentView(R.layout.canvas_view);
-;   }
-
-    public void importImageButton(View myView)
-    {
-
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
     }
 
-    public void cameraButton(View myView)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
-
+        if(item.getItemId() == R.id.blankCanvasButton)
+        {
+            Intent intent = new Intent(this, CanvasPage.class);
+            startActivity(intent);
+        }
+        return true;
     }
 }

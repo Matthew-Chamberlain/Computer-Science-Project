@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/blankCanvasButton"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="create new drawing"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/importImageButton"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="import Image"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/cameraButton"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="Use Camera"
+        app:showAsAction="always" />
+</menu>

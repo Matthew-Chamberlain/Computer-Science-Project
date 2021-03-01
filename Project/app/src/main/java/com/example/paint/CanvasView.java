@@ -150,7 +150,7 @@ public class CanvasView extends View {
             }
         }
     }
-    
+
     public void clearMap()
     {
         pathMap.clear();
