@@ -11,7 +11,7 @@ public class CanvasPage extends AppCompatActivity {
 
     CanvasView canvas;
     String currentTool;
-    LinearLayout paintDropDown, shapeDropDown, textDropDown;
+    LinearLayout paintDropDown, shapeDropDown;// textDropDown;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +20,7 @@ public class CanvasPage extends AppCompatActivity {
         currentTool = "paint";
         paintDropDown =(LinearLayout)findViewById(R.id.paintToolsDropDown);
         shapeDropDown =(LinearLayout)findViewById(R.id.shapeToolsDropDown);
-        textDropDown =(LinearLayout)findViewById(R.id.textToolDropDown);
+        //textDropDown =(LinearLayout)findViewById(R.id.textToolDropDown);
     }
 
     public void hideUI(View view)
@@ -34,7 +34,7 @@ public class CanvasPage extends AppCompatActivity {
     public void paintToolButtonPressed(View view)
     {
         shapeDropDown.setVisibility(View.INVISIBLE);
-        textDropDown.setVisibility(View.INVISIBLE);
+        //textDropDown.setVisibility(View.INVISIBLE);
         if(currentTool.equals("paint"))
         {
             if(paintDropDown.getVisibility() == View.INVISIBLE){paintDropDown.setVisibility(View.VISIBLE);}
@@ -49,7 +49,7 @@ public class CanvasPage extends AppCompatActivity {
     public void shapeToolButtonPressed(View view)
     {
         paintDropDown.setVisibility(View.INVISIBLE);
-        textDropDown.setVisibility(View.INVISIBLE);
+        //textDropDown.setVisibility(View.INVISIBLE);
         if(currentTool.equals("shape"))
         {
             if(shapeDropDown.getVisibility() == View.INVISIBLE){shapeDropDown.setVisibility(View.VISIBLE);}
@@ -60,7 +60,7 @@ public class CanvasPage extends AppCompatActivity {
             currentTool = "shape";
         }
     }
-    public void textToolButtonPressed(View view)
+    /*public void textToolButtonPressed(View view)
     {
         shapeDropDown.setVisibility(View.INVISIBLE);
         paintDropDown.setVisibility(View.INVISIBLE);
@@ -74,5 +74,5 @@ public class CanvasPage extends AppCompatActivity {
         {
             currentTool = "text";
         }
-    }
+    }*/
 }
