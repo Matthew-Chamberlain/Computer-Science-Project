@@ -7,11 +7,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A9A9A9"
+    android:visibility="visible"
     tools:context=".CanvasPage">
 
     <com.example.paint.CanvasView
         android:id="@+id/canvasView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,136 +21,11 @@
     </com.example.paint.CanvasView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/systemToolsBar"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:alpha="0.75"
-        android:background="#D5D5D5"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="gone">
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:id="@+id/paintToolsDropDown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:background="#FFFFFF"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/canvasView">
-
-        <Button
-            android:id="@+id/button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Paint" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/PaintTool1"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="0dp"
-                android:text="Button"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/PaintTool2"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_6sdp"
-                android:text="Button"
-                app:layout_constraintStart_toEndOf="@+id/PaintTool1"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/PaintTool3"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/_6sdp"
-                android:text="Button"
-                app:layout_constraintStart_toEndOf="@+id/PaintTool2"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/PaintTool4"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="wrap_content"
-                android:text="Button"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/PaintTool3"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Size:" />
-
-        <SeekBar
-            android:id="@+id/seekBar"
-            android:layout_width="match_parent"
-            android:layout_height="44dp" />
-
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Transparency:" />
-
-        <SeekBar
-            android:id="@+id/seekBar2"
-            android:layout_width="match_parent"
-            android:layout_height="44dp" />
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Colour Blender" />
-
-        <SeekBar
-            android:id="@+id/seekBar3"
-            android:layout_width="match_parent"
-            android:layout_height="44dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/shapeToolsDropDown"
-        android:layout_width="match_parent"
-        android:layout_height="680dp"
-        android:layout_marginTop="48dp"
-        android:background="#FFFFFF"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/canvasView">
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Shape" />
-    </LinearLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/drawingToolsBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:alpha="0.75"
         android:background="#D5D5D5"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -167,24 +43,21 @@
             android:id="@+id/shapeTool"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="64dp"
             android:onClick="shapeToolButtonPressed"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textTool"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/paintTool"
             app:layout_constraintTop_toTopOf="@id/paintTool"
-            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@android:drawable/ic_menu_edit" />
 
         <ImageButton
             android:id="@+id/textTool"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="64dp"
-            android:layout_marginLeft="64dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/extraTools"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/shapeTool"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@android:drawable/ic_menu_edit" />
 
         <ImageButton
@@ -192,11 +65,316 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.97"
-            app:layout_constraintStart_toEndOf="@+id/textTool"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_edit" />
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/systemToolsBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:alpha="0.75"
+        android:background="#D5D5D5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/paintToolsDropDown"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/drawingToolsBar"
+        app:layout_constraintVertical_bias="0.0"
+        tools:visibility="invisible">
+
+        <TextView
+            android:id="@+id/selectedPaintTool"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="Paint Brush"
+            app:layout_constraintBottom_toTopOf="@+id/preview"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Preview"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/selectedPaintTool" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/sizeText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/preview">
+
+            <Button
+                android:id="@+id/paintBrush"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setPaintTool"
+                android:text="Paint"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/sprayCan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setPaintTool"
+                android:text="Spray"
+                app:layout_constraintEnd_toStartOf="@+id/eraser"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/fillBucket"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/eraser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setPaintTool"
+                android:text="Eraser"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Button
+                android:id="@+id/fillBucket"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="setPaintTool"
+                android:text="Fill"
+                app:layout_constraintEnd_toStartOf="@+id/sprayCan"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/paintBrush"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/sizeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="16dp"
+            android:text="Size: 7"
+            app:layout_constraintBottom_toTopOf="@+id/paintSizeSlider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+        <SeekBar
+            android:id="@+id/paintSizeSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:max="200"
+            android:min="1"
+            android:progress="7"
+            app:layout_constraintBottom_toTopOf="@+id/paintTransparencyText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sizeText" />
+
+        <TextView
+            android:id="@+id/paintTransparencyText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="16dp"
+            android:text="Transparency: 255"
+            app:layout_constraintBottom_toTopOf="@+id/paintTransparencySlider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paintSizeSlider" />
+
+        <SeekBar
+            android:id="@+id/paintTransparencySlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:max="255"
+            android:min="0"
+            android:progress="255"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paintTransparencyText" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paintTransparencySlider">
+
+            <Button
+                android:id="@+id/redButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Red"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/blueButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Blue"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/yellowButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Yellow"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/greenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Green"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/magentaButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Magenta"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/colourText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+            <Button
+                android:id="@+id/blackButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Black"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/whiteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="White"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/greyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Grey"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/darkGreyButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="DKGREY"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/cyanButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="changeColour"
+                android:text="Cyan"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/colourText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="16dp"
+            android:text="Colour Blender:"
+            app:layout_constraintBottom_toTopOf="@+id/colourPicker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+        <com.rtugeek.android.colorseekbar.ColorSeekBar
+            android:id="@+id/colourPicker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/colourText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shapeToolsDropDown"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#FFFFFF"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/canvasView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/drawingToolsBar"
+        tools:visibility="invisible">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="AAAAAAAAAAAAAA"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

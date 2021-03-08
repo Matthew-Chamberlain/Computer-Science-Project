@@ -27,6 +27,7 @@ public class CanvasView extends View {
     private Paint paintLine;
     private HashMap<Integer, Path> pathMap;
     private HashMap<Integer, Point> previousPointMap;
+    private String selectedPaintTool, selectedShapeTool, selectedTool;
 
 
     public CanvasView(Context context, @Nullable AttributeSet attrs)
@@ -70,23 +71,45 @@ public class CanvasView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        int action = event.getActionMasked();
-        int actionIndex = event.getActionIndex();
+        if(selectedTool.equals("paint"))
+        {
+            if(selectedPaintTool.equalsIgnoreCase("Paint Brush") || selectedPaintTool.equalsIgnoreCase("Eraser"))
+            {
+                int action = event.getActionMasked();
+                int actionIndex = event.getActionIndex();
 
-        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_UP)
-        {
-            touchBegin(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
-        }
-        else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
-        {
-            touchStopped(event.getPointerId(actionIndex));
-        }
-        else
-        {
-            touchMoved(event);
-        }
+                if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_UP)
+                {
+                    touchBegin(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
+                }
+                else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
+                {
+                    touchStopped(event.getPointerId(actionIndex));
+                }
+                else
+                {
+                    touchMoved(event);
+                }
 
-        invalidate();
+                invalidate();
+            }
+            else if(selectedPaintTool.equalsIgnoreCase("Spray Can"))
+            {
+
+            }
+            else if(selectedPaintTool.equalsIgnoreCase("Fill Bucket"))
+            {
+
+            }
+        }
+        else if(selectedTool.equals("shape"))
+        {
+
+        }
+        else if(selectedTool.equals("text"))
+        {
+
+        }
         return true;
     }
 
@@ -159,4 +182,34 @@ public class CanvasView extends View {
         invalidate();
     }
 
+    public void updatePaint(int size, int colour, int alpha)
+    {
+        if(selectedPaintTool.equals("Paint Brush"))
+        {
+            paintLine.setStrokeWidth(size);
+            paintLine.setColor(colour);
+            paintLine.setAlpha(alpha);
+        }
+        else
+        {
+            paintLine.setStrokeWidth(size);
+            paintLine.setColor(Color.WHITE);
+            paintLine.setAlpha(255);
+        }
+    }
+
+    public void setPaintTool(String tool)
+    {
+       selectedPaintTool = tool;
+    }
+
+    public String getSelectedTool()
+    {
+        return selectedTool;
+    }
+
+    public void setSelectedTool(String tool)
+    {
+        selectedTool = tool;
+    }
 }
