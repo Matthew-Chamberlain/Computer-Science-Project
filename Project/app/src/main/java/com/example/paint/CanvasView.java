@@ -1,6 +1,8 @@
 package com.example.paint;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,6 +11,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -16,6 +19,9 @@ import android.view.View;
 
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
 
 public class CanvasView extends View {
 
@@ -28,6 +34,7 @@ public class CanvasView extends View {
     private HashMap<Integer, Path> pathMap;
     private HashMap<Integer, Point> previousPointMap;
     private String selectedPaintTool, selectedShapeTool, selectedTool;
+    public int selectedPaintColour;
 
 
     public CanvasView(Context context, @Nullable AttributeSet attrs)
@@ -37,6 +44,7 @@ public class CanvasView extends View {
         paintLine = new Paint();
         pathMap = new HashMap<>();
         previousPointMap = new HashMap<>();
+        selectedPaintColour = Color.BLACK;
         setup();
     }
 
@@ -64,52 +72,31 @@ public class CanvasView extends View {
 
         for(Integer key: pathMap.keySet())
         {
-            canvas.drawPath(pathMap.get(key),paintLine);
+           canvas.drawPath(pathMap.get(key),paintLine);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if(selectedTool.equals("paint"))
+        int action = event.getActionMasked();
+        int actionIndex = event.getActionIndex();
+
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_UP)
         {
-            if(selectedPaintTool.equalsIgnoreCase("Paint Brush") || selectedPaintTool.equalsIgnoreCase("Eraser"))
-            {
-                int action = event.getActionMasked();
-                int actionIndex = event.getActionIndex();
-
-                if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_UP)
-                {
-                    touchBegin(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
-                }
-                else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
-                {
-                    touchStopped(event.getPointerId(actionIndex));
-                }
-                else
-                {
-                    touchMoved(event);
-                }
-
-                invalidate();
-            }
-            else if(selectedPaintTool.equalsIgnoreCase("Spray Can"))
-            {
-
-            }
-            else if(selectedPaintTool.equalsIgnoreCase("Fill Bucket"))
-            {
-
-            }
+            touchBegin(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
         }
-        else if(selectedTool.equals("shape"))
+        else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
         {
-
+            touchStopped(event.getPointerId(actionIndex));
         }
-        else if(selectedTool.equals("text"))
+        else
         {
-
+            touchMoved(event);
         }
+
+        invalidate();
+
         return true;
     }
 
@@ -134,6 +121,11 @@ public class CanvasView extends View {
         path.moveTo(x,y);
         point.x = (int) x;
         point.y = (int) y;
+
+        if(selectedPaintTool.equals("Fill Bucket"))
+        {
+            floodFill(point, bitmap.getPixel((int)x, (int)y), selectedPaintColour);
+        }
     }
 
     private void touchStopped(int pointerID)
@@ -147,31 +139,38 @@ public class CanvasView extends View {
 
     private void touchMoved(MotionEvent event)
     {
-        for(int i = 0; i < event.getPointerCount(); i++)
+        float newX;
+        float newY;
+        if(selectedPaintTool.equals("Paint Brush") || selectedPaintTool.equals("Eraser"))
         {
-            int pointerID = event.getPointerId(i);
-            int pointerIndex = event.findPointerIndex(pointerID);
-
-            if(pathMap.containsKey(pointerID))
+            for(int i = 0; i < event.getPointerCount(); i++)
             {
-                float newX = event.getX(pointerIndex);
-                float newY = event.getY(pointerIndex);
+                int pointerID = event.getPointerId(i);
+                int pointerIndex = event.findPointerIndex(pointerID);
 
-                Path path = pathMap.get(pointerID);
-                Point point = previousPointMap.get(pointerID);
-
-                float dx = Math.abs(newX - point.x);
-                float dy = Math.abs(newY - point.y);
-
-                if(dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE)
+                if(pathMap.containsKey(pointerID))
                 {
-                    path.quadTo(point.x, point.y, (newX + point.x)/2, (newY + point.y)/2);
+                    newX = event.getX(pointerIndex);
+                    newY = event.getY(pointerIndex);
 
-                    point.x = (int) newX;
-                    point.y = (int) newY;
+
+                    Path path = pathMap.get(pointerID);
+                    Point point = previousPointMap.get(pointerID);
+
+                    float dx = Math.abs(newX - point.x);
+                    float dy = Math.abs(newY - point.y);
+
+                    if(dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE)
+                    {
+                        path.quadTo(point.x, point.y, (newX + point.x)/2, (newY + point.y)/2);
+
+                        point.x = (int) newX;
+                        point.y = (int) newY;
+                    }
                 }
             }
         }
+
     }
 
     public void clearMap()
@@ -184,17 +183,24 @@ public class CanvasView extends View {
 
     public void updatePaint(int size, int colour, int alpha)
     {
+        selectedPaintColour = colour;
         if(selectedPaintTool.equals("Paint Brush"))
         {
             paintLine.setStrokeWidth(size);
             paintLine.setColor(colour);
             paintLine.setAlpha(alpha);
         }
-        else
+        else if(selectedPaintTool.equals("Eraser"))
         {
             paintLine.setStrokeWidth(size);
             paintLine.setColor(Color.WHITE);
             paintLine.setAlpha(255);
+        }
+        else if(selectedPaintTool.equals("Spray Can"))
+        {
+            paintLine.setStrokeWidth(size/5);
+            paintLine.setColor(colour);
+            paintLine.setAlpha(alpha);
         }
     }
 
@@ -211,5 +217,38 @@ public class CanvasView extends View {
     public void setSelectedTool(String tool)
     {
         selectedTool = tool;
+    }
+
+    private void floodFill(Point pt, int targetColour, int replacementColour)
+    {
+        Queue<Point> q = new LinkedList<Point>();
+        q.add(pt);
+        while (q.size() > 0) {
+            Point n = q.poll();
+            if (bitmap.getPixel(n.x, n.y) != targetColour)
+                continue;
+
+            Point w = n, e = new Point(n.x + 1, n.y);
+            while ((w.x > 0) && (bitmap.getPixel(w.x, w.y) == targetColour)) {
+                bitmap.setPixel(w.x, w.y, replacementColour);
+                if ((w.y > 0) && (bitmap.getPixel(w.x, w.y - 1) == targetColour))
+                    q.add(new Point(w.x, w.y - 1));
+                if ((w.y < bitmap.getHeight() - 1)
+                        && (bitmap.getPixel(w.x, w.y + 1) == targetColour))
+                    q.add(new Point(w.x, w.y + 1));
+                w.x--;
+            }
+            while ((e.x < bitmap.getWidth() - 1)
+                    && (bitmap.getPixel(e.x, e.y) == targetColour)) {
+                bitmap.setPixel(e.x, e.y, replacementColour);
+
+                if ((e.y > 0) && (bitmap.getPixel(e.x, e.y - 1) == targetColour))
+                    q.add(new Point(e.x, e.y - 1));
+                if ((e.y < bitmap.getHeight() - 1)
+                        && (bitmap.getPixel(e.x, e.y + 1) == targetColour))
+                    q.add(new Point(e.x, e.y + 1));
+                e.x++;
+            }
+        }
     }
 }
