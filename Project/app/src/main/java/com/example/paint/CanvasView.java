@@ -70,9 +70,12 @@ public class CanvasView extends View {
     {
         canvas.drawBitmap(bitmap, 0, 0, paintToScreen);
 
-        for(Integer key: pathMap.keySet())
+        if(selectedPaintTool.equals("Paint Brush") || selectedPaintTool.equals("Eraser"))
         {
-           canvas.drawPath(pathMap.get(key),paintLine);
+            for(Integer key: pathMap.keySet())
+            {
+                canvas.drawPath(pathMap.get(key),paintLine);
+            }
         }
     }
 
@@ -124,15 +127,18 @@ public class CanvasView extends View {
 
         if(selectedPaintTool.equals("Fill Bucket"))
         {
-            floodFill(point, bitmap.getPixel((int)x, (int)y), selectedPaintColour);
+            floodFill(point, bitmap.getPixel(point.x, point.y), selectedPaintColour);
         }
     }
 
     private void touchStopped(int pointerID)
     {
-        Path path = pathMap.get(pointerID);
-        bitmapCanvas.drawPath(path, paintLine);
-        path.reset();
+        if(selectedPaintTool.equals("Paint Brush") || selectedPaintTool.equals("Eraser"))
+        {
+            Path path = pathMap.get(pointerID);
+            bitmapCanvas.drawPath(path, paintLine);
+            path.reset();
+        }
     }
 
 
@@ -141,13 +147,12 @@ public class CanvasView extends View {
     {
         float newX;
         float newY;
-        if(selectedPaintTool.equals("Paint Brush") || selectedPaintTool.equals("Eraser"))
+        if(selectedTool.equals("paint"))
         {
             for(int i = 0; i < event.getPointerCount(); i++)
             {
                 int pointerID = event.getPointerId(i);
                 int pointerIndex = event.findPointerIndex(pointerID);
-
                 if(pathMap.containsKey(pointerID))
                 {
                     newX = event.getX(pointerIndex);
@@ -170,7 +175,6 @@ public class CanvasView extends View {
                 }
             }
         }
-
     }
 
     public void clearMap()
@@ -250,5 +254,10 @@ public class CanvasView extends View {
                 e.x++;
             }
         }
+    }
+
+    private void sprayCan()
+    {
+
     }
 }

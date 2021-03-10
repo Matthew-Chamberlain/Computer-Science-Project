@@ -15,7 +15,7 @@ public class CanvasPage extends AppCompatActivity {
 
     CanvasView canvas;
     int currentColour, currentSize, currentAlpha;
-    ConstraintLayout paintDropDown, shapeDropDown;// textDropDown;
+    ConstraintLayout paintDropDown, shapeDropDown, textDropDown;
     SeekBar sizeSlider, transparencySlider;
     ColorSeekBar colourPicker;
 
@@ -36,7 +36,7 @@ public class CanvasPage extends AppCompatActivity {
 
         paintDropDown =(ConstraintLayout) findViewById(R.id.paintToolsDropDown);
         shapeDropDown =(ConstraintLayout) findViewById(R.id.shapeToolsDropDown);
-        //textDropDown =(LinearLayout)findViewById(R.id.textToolDropDown);
+        textDropDown =(ConstraintLayout)findViewById(R.id.textToolsDropDown);
 
         sizeSlider = findViewById(R.id.paintSizeSlider);
         sizeSlider();
@@ -44,8 +44,8 @@ public class CanvasPage extends AppCompatActivity {
         transparencySlider = findViewById(R.id.paintTransparencySlider);
         transparencySlider();
 
-        colourPicker = findViewById(R.id.colourPicker);
-        colourSlider();
+        colourPicker = findViewById(R.id.paintColourPicker);
+        colourSlider(colourPicker);
 
     }
 
@@ -60,7 +60,7 @@ public class CanvasPage extends AppCompatActivity {
     public void paintToolButtonPressed(View view)
     {
         shapeDropDown.setVisibility(View.INVISIBLE);
-        //textDropDown.setVisibility(View.INVISIBLE);
+        textDropDown.setVisibility(View.INVISIBLE);
         if(canvas.getSelectedTool().equals("paint"))
         {
             if(paintDropDown.getVisibility() == View.INVISIBLE){paintDropDown.setVisibility(View.VISIBLE);}
@@ -75,7 +75,7 @@ public class CanvasPage extends AppCompatActivity {
     public void shapeToolButtonPressed(View view)
     {
         paintDropDown.setVisibility(View.INVISIBLE);
-        //textDropDown.setVisibility(View.INVISIBLE);
+        textDropDown.setVisibility(View.INVISIBLE);
         if(canvas.getSelectedTool().equals("shape"))
         {
             if(shapeDropDown.getVisibility() == View.INVISIBLE){shapeDropDown.setVisibility(View.VISIBLE);}
@@ -86,11 +86,11 @@ public class CanvasPage extends AppCompatActivity {
             canvas.setSelectedTool("shape");
         }
     }
-    /*public void textToolButtonPressed(View view)
+    public void textToolButtonPressed(View view)
     {
         shapeDropDown.setVisibility(View.INVISIBLE);
         paintDropDown.setVisibility(View.INVISIBLE);
-        if(currentTool.equals("text"))
+        if(canvas.getSelectedTool().equals("text"))
         {
 
             if(textDropDown.getVisibility() == View.INVISIBLE){textDropDown.setVisibility(View.VISIBLE);}
@@ -98,9 +98,9 @@ public class CanvasPage extends AppCompatActivity {
         }
         else
         {
-            currentTool = "text";
+            canvas.setSelectedTool("text");
         }
-    }*/
+    }
 
     public void changeColour(View myView)
     {
@@ -193,13 +193,13 @@ public class CanvasPage extends AppCompatActivity {
         });
     }
 
-    public void colourSlider()
+    public void colourSlider(ColorSeekBar colourseeker)
     {
-        colourPicker.setMaxPosition(100);
-        colourPicker.setColorSeeds(R.array.material_colors);
-        colourPicker.setColorBarPosition(50);
+        colourseeker.setMaxPosition(100);
+        colourseeker.setColorSeeds(R.array.material_colors);
+        colourseeker.setColorBarPosition(50);
 
-        colourPicker.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
+        colourseeker.setOnColorChangeListener(new ColorSeekBar.OnColorChangeListener() {
             @Override
             public void onColorChangeListener(int colorBarPosition, int alphaBarPosition, int color) {
                 TextView colourText = findViewById(R.id.colourText);
