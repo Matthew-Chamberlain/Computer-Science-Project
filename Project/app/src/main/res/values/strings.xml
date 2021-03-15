@@ -1,3 +1,17 @@
 <resources>
-    <string name="app_name">Paint</string>
+    <string-array name="fonts">
+        <item>sans-serif</item>
+        <item>sans-serif-thin</item>
+        <item>sans-serif-medium</item>
+        <item>sans-serif-black</item>
+        <item>sans-serif-condensed</item>
+        <item>sans-serif-condensed-light</item>
+        <item>sans-serif-condensed-medium</item>
+        <item>sans-serif-smallcaps</item>
+        <item>serif</item>
+        <item>monospace</item>
+        <item>serif-monospace</item>
+        <item>casual</item>
+        <item>cursive</item>
+    </string-array>
 </resources>

@@ -3,6 +3,7 @@ package com.example.paint;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,18 +11,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-
-import android.os.Build;
-import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 
 public class CanvasView extends View {
 
@@ -30,11 +25,10 @@ public class CanvasView extends View {
     private Bitmap bitmap;
     private Canvas bitmapCanvas;
     private Paint paintToScreen;
-    private Paint paintLine;
+    private Paint paintLine, textPaint, shapePaint;
     private HashMap<Integer, Path> pathMap;
     private HashMap<Integer, Point> previousPointMap;
-    private String selectedPaintTool, selectedShapeTool, selectedTool;
-    public int selectedPaintColour;
+    private String selectedPaintTool, selectedShapeTool, selectedTool, text;
 
 
     public CanvasView(Context context, @Nullable AttributeSet attrs)
@@ -44,17 +38,8 @@ public class CanvasView extends View {
         paintLine = new Paint();
         pathMap = new HashMap<>();
         previousPointMap = new HashMap<>();
-        selectedPaintColour = Color.BLACK;
-        setup();
-    }
-
-    private void setup()
-    {
-        paintLine.setAntiAlias(true);
-        paintLine.setColor(Color.BLACK);
-        paintLine.setStyle(Paint.Style.STROKE);
-        paintLine.setStrokeWidth(7);
-        paintLine.setStrokeCap(Paint.Cap.ROUND);
+        textPaint = new Paint();
+        shapePaint = new Paint();
     }
 
     @Override
@@ -70,11 +55,14 @@ public class CanvasView extends View {
     {
         canvas.drawBitmap(bitmap, 0, 0, paintToScreen);
 
-        if(selectedPaintTool.equals("Paint Brush") || selectedPaintTool.equals("Eraser"))
+        if(selectedTool.equals("paint"))
         {
-            for(Integer key: pathMap.keySet())
+            if(selectedPaintTool.equals("Paint Brush") || selectedPaintTool.equals("Eraser"))
             {
-                canvas.drawPath(pathMap.get(key),paintLine);
+                for(Integer key: pathMap.keySet())
+                {
+                    canvas.drawPath(pathMap.get(key),paintLine);
+                }
             }
         }
     }
@@ -108,36 +96,51 @@ public class CanvasView extends View {
         Path path;
         Point point;
 
-        if(pathMap.containsKey(pointerID))
+        if(selectedTool.equals("paint") || selectedTool.equals("shape"))
         {
-            path = pathMap.get(pointerID);
-            point = previousPointMap.get(pointerID);
-        }
-        else
-        {
-            path = new Path();
-            pathMap.put(pointerID, path);
-            point = new Point();
-            previousPointMap.put(pointerID, point);
-        }
+            if(pathMap.containsKey(pointerID))
+            {
+                path = pathMap.get(pointerID);
+                point = previousPointMap.get(pointerID);
+            }
+            else
+            {
+                path = new Path();
+                pathMap.put(pointerID, path);
+                point = new Point();
+                previousPointMap.put(pointerID, point);
+            }
 
-        path.moveTo(x,y);
-        point.x = (int) x;
-        point.y = (int) y;
+            path.moveTo(x,y);
+            point.x = (int) x;
+            point.y = (int) y;
 
-        if(selectedPaintTool.equals("Fill Bucket"))
+            if(selectedPaintTool.equals("Fill Bucket"))
+            {
+                floodFill(point, bitmap.getPixel(point.x, point.y), paintLine.getColor());
+            }
+        }
+        else if(selectedTool.equals("text"))
         {
-            floodFill(point, bitmap.getPixel(point.x, point.y), selectedPaintColour);
+            bitmapCanvas.drawText(text, x, y, textPaint);
+        }
+        else if(selectedTool.equals("shape"))
+        {
+            
         }
     }
 
     private void touchStopped(int pointerID)
     {
-        if(selectedPaintTool.equals("Paint Brush") || selectedPaintTool.equals("Eraser"))
+        if(selectedTool.equals("paint"))
         {
             Path path = pathMap.get(pointerID);
             bitmapCanvas.drawPath(path, paintLine);
             path.reset();
+        }
+        if(selectedTool.equals("shape"))
+        {
+
         }
     }
 
@@ -185,32 +188,28 @@ public class CanvasView extends View {
         invalidate();
     }
 
-    public void updatePaint(int size, int colour, int alpha)
+    public void updatePaint(Paint paint)
     {
-        selectedPaintColour = colour;
-        if(selectedPaintTool.equals("Paint Brush"))
+        if(selectedPaintTool.equals("Paint Brush")  || selectedPaintTool.equals("Fill Bucket"))
         {
-            paintLine.setStrokeWidth(size);
-            paintLine.setColor(colour);
-            paintLine.setAlpha(alpha);
+            paintLine = paint;
         }
         else if(selectedPaintTool.equals("Eraser"))
         {
-            paintLine.setStrokeWidth(size);
+            paintLine = paint;
             paintLine.setColor(Color.WHITE);
             paintLine.setAlpha(255);
-        }
-        else if(selectedPaintTool.equals("Spray Can"))
-        {
-            paintLine.setStrokeWidth(size/5);
-            paintLine.setColor(colour);
-            paintLine.setAlpha(alpha);
         }
     }
 
     public void setPaintTool(String tool)
     {
        selectedPaintTool = tool;
+    }
+
+    public void setShapeTool(String tool)
+    {
+        selectedShapeTool = tool;
     }
 
     public String getSelectedTool()
@@ -221,6 +220,17 @@ public class CanvasView extends View {
     public void setSelectedTool(String tool)
     {
         selectedTool = tool;
+    }
+
+    public void updateText(Paint textTool, String txt)
+    {
+        textPaint = textTool;
+        text = txt;
+    }
+
+    public void updateShape(Paint shapeTool)
+    {
+        shapePaint = shapeTool;
     }
 
     private void floodFill(Point pt, int targetColour, int replacementColour)
@@ -254,10 +264,5 @@ public class CanvasView extends View {
                 e.x++;
             }
         }
-    }
-
-    private void sprayCan()
-    {
-
     }
 }

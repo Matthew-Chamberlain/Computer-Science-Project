@@ -8,7 +8,8 @@
     android:layout_height="match_parent"
     android:background="#A9A9A9"
     android:visibility="visible"
-    tools:context=".CanvasPage">
+    tools:context=".CanvasPage"
+    tools:visibility="visible">
 
     <com.example.paint.CanvasView
         android:id="@+id/canvasView"
@@ -33,7 +34,7 @@
             android:id="@+id/paintTool"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="paintToolButtonPressed"
+            android:onClick="processButtons"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +44,7 @@
             android:id="@+id/shapeTool"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="shapeToolButtonPressed"
+            android:onClick="processButtons"
             app:layout_constraintEnd_toStartOf="@+id/textTool"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/paintTool"
@@ -54,7 +55,7 @@
             android:id="@+id/textTool"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="textToolButtonPressed"
+            android:onClick="processButtons"
             app:layout_constraintEnd_toStartOf="@+id/extraTools"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/shapeTool"
@@ -95,12 +96,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="#FFFFFF"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/drawingToolsBar"
         app:layout_constraintVertical_bias="0.0"
-        tools:visibility="visible">
+        tools:visibility="invisible">
 
         <TextView
             android:id="@+id/selectedPaintTool"
@@ -138,7 +139,7 @@
                 android:id="@+id/paintBrush"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="setPaintTool"
+                android:onClick="processButtons"
                 android:text="Paint"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -147,7 +148,7 @@
                 android:id="@+id/sprayCan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="setPaintTool"
+                android:onClick="processButtons"
                 android:text="Spray"
                 app:layout_constraintEnd_toStartOf="@+id/eraser"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -158,7 +159,7 @@
                 android:id="@+id/eraser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="setPaintTool"
+                android:onClick="processButtons"
                 android:text="Eraser"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -167,7 +168,7 @@
                 android:id="@+id/fillBucket"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="setPaintTool"
+                android:onClick="processButtons"
                 android:text="Fill"
                 app:layout_constraintEnd_toStartOf="@+id/sprayCan"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -234,47 +235,47 @@
             app:layout_constraintTop_toBottomOf="@+id/paintTransparencySlider">
 
             <Button
-                android:id="@+id/redButton"
+                android:id="@+id/redPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Red"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/blueButton"
+                android:id="@+id/bluePaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Blue"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/yellowButton"
+                android:id="@+id/yellowPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Yellow"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/greenButton"
+                android:id="@+id/greenPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Green"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/magentaButton"
+                android:id="@+id/magentaPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Magenta"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -290,47 +291,47 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
             <Button
-                android:id="@+id/blackButton"
+                android:id="@+id/blackPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Black"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/whiteButton"
+                android:id="@+id/whitePaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="White"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/greyButton"
+                android:id="@+id/greyPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Grey"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/darkGreyButton"
+                android:id="@+id/darkGreyPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="DKGREY"
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/cyanButton"
+                android:id="@+id/cyanPaintButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="changeColour"
+                android:onClick="processButtons"
                 android:text="Cyan"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -363,18 +364,18 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="#FFFFFF"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/canvasView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/drawingToolsBar"
-        tools:visibility="invisible">
+        tools:visibility="visible">
 
         <TextView
-            android:id="@+id/textView6"
+            android:id="@+id/selectedShapeTool"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Shape"
+            android:text="Line"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -386,14 +387,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView7"
+            app:layout_constraintBottom_toTopOf="@+id/shapeSizeText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6">
+            app:layout_constraintTop_toBottomOf="@+id/selectedShapeTool">
 
             <Button
                 android:id="@+id/lineButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="processButtons"
                 android:text="Line"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -402,6 +404,7 @@
                 android:id="@+id/arrowButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="processButtons"
                 android:text="Arrow"
                 app:layout_constraintEnd_toStartOf="@+id/circleButton"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -412,6 +415,7 @@
                 android:id="@+id/circleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="processButtons"
                 android:text="circle"
                 app:layout_constraintEnd_toStartOf="@+id/triangleButton"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -422,6 +426,7 @@
                 android:id="@+id/triangleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="processButtons"
                 android:text="tri"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -431,6 +436,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:onClick="processButtons"
                 android:text="Square"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/lineButton" />
@@ -440,6 +446,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:onClick="processButtons"
                 android:text="Penta"
                 app:layout_constraintEnd_toStartOf="@+id/hexagonButton"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -451,6 +458,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:onClick="processButtons"
                 android:text="hexa"
                 app:layout_constraintEnd_toStartOf="@+id/octogonButton"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -462,29 +470,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
+                android:onClick="processButtons"
                 android:text="Octo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/triangleButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/textView7"
+            android:id="@+id/shapeSizeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="Thickness:"
-            app:layout_constraintBottom_toTopOf="@+id/seekBar2"
+            app:layout_constraintBottom_toTopOf="@+id/shapeSizeSlider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
 
         <SeekBar
-            android:id="@+id/seekBar2"
+            android:id="@+id/shapeSizeSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:max="200"
+            android:progress="7"
             app:layout_constraintBottom_toTopOf="@+id/textView8"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7" />
+            app:layout_constraintTop_toBottomOf="@+id/shapeSizeText" />
 
         <TextView
             android:id="@+id/textView8"
@@ -494,7 +505,7 @@
             android:text="Outline Colour:"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
+            app:layout_constraintTop_toBottomOf="@+id/shapeSizeSlider" />
 
         <LinearLayout
             android:id="@+id/linearLayout6"
@@ -509,39 +520,44 @@
             app:layout_constraintTop_toBottomOf="@+id/textView8">
 
             <Button
-                android:id="@+id/button25"
+                android:id="@+id/redShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="red" />
 
             <Button
-                android:id="@+id/button26"
+                android:id="@+id/blueShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="blue" />
 
             <Button
-                android:id="@+id/button27"
+                android:id="@+id/yellowShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="Yellow" />
 
             <Button
-                android:id="@+id/button28"
+                android:id="@+id/greenShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="green" />
 
             <Button
-                android:id="@+id/button29"
+                android:id="@+id/magentaShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="Purple" />
         </LinearLayout>
 
         <LinearLayout
@@ -555,39 +571,44 @@
             app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
             <Button
-                android:id="@+id/button30"
+                android:id="@+id/blackShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="black" />
 
             <Button
-                android:id="@+id/button31"
+                android:id="@+id/whiteShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="white" />
 
             <Button
-                android:id="@+id/button32"
+                android:id="@+id/greyShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="grey" />
 
             <Button
-                android:id="@+id/button33"
+                android:id="@+id/darkGreyShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="DKGREY" />
 
             <Button
-                android:id="@+id/button34"
+                android:id="@+id/cyanShapeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="Cyan" />
         </LinearLayout>
 
         <com.rtugeek.android.colorseekbar.ColorSeekBar
@@ -617,20 +638,21 @@
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Text"
+            android:fontFamily="sans-serif"
+            android:text="Preview"
+            android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5">
 
@@ -638,6 +660,7 @@
                 android:id="@+id/boldButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="processButtons"
                 android:text="Bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -646,7 +669,8 @@
                 android:id="@+id/italicButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="talic"
+                android:onClick="processButtons"
+                android:text="italic"
                 app:layout_constraintEnd_toStartOf="@+id/underlineButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/boldButton"
@@ -656,6 +680,7 @@
                 android:id="@+id/strikethroughButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="processButtons"
                 android:text="Strike"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -664,6 +689,7 @@
                 android:id="@+id/underlineButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="processButtons"
                 android:text="under"
                 app:layout_constraintEnd_toStartOf="@+id/strikethroughButton"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -672,26 +698,55 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayout4"
-            android:layout_width="409dp"
-            android:layout_height="25dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginLeft="1dp"
-            android:layout_marginTop="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/textView3"
+            android:id="@+id/constraintLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout3">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:fontFamily="sans-serif"
+                android:text="Enter Text:"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <EditText
+                android:id="@+id/enterText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="sans-serif"
+                android:inputType="text"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/textView"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/textSizeText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2">
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
                 android:text="Font:"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Spinner
-                android:id="@+id/spinner"
+                android:id="@+id/fontDropDown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -700,33 +755,33 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textSizeText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Size:"
-            app:layout_constraintBottom_toTopOf="@+id/seekBar"
+            android:text="Size: 11"
+            app:layout_constraintBottom_toTopOf="@+id/textSizeSlider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
 
         <SeekBar
-            android:id="@+id/seekBar"
+            android:id="@+id/textSizeSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:max="72"
+            android:min="1"
+            android:progress="11"
             app:layout_constraintBottom_toTopOf="@+id/textView4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+            app:layout_constraintTop_toBottomOf="@+id/textSizeText" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:text="Colour: "
             app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
-            app:layout_constraintTop_toBottomOf="@+id/seekBar"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textSizeSlider" />
 
         <LinearLayout
             android:id="@+id/linearLayout4"
@@ -738,92 +793,100 @@
             app:layout_constraintTop_toBottomOf="@+id/textView4">
 
             <Button
-                android:id="@+id/button8"
+                android:id="@+id/redTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="red" />
 
             <Button
-                android:id="@+id/button9"
+                android:id="@+id/blueTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="blue" />
 
             <Button
-                android:id="@+id/button10"
+                android:id="@+id/yellowTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="yellow" />
 
             <Button
-                android:id="@+id/button11"
+                android:id="@+id/greenTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="green" />
 
             <Button
-                android:id="@+id/button12"
+                android:id="@+id/magentaTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="purple" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/textColourPicker"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
             <Button
-                android:id="@+id/button13"
+                android:id="@+id/blackTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="black" />
 
             <Button
-                android:id="@+id/button14"
+                android:id="@+id/whiteTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="white" />
 
             <Button
-                android:id="@+id/button15"
+                android:id="@+id/greyTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="grey" />
 
             <Button
-                android:id="@+id/button16"
+                android:id="@+id/darkGreyTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="DKGREY" />
 
             <Button
-                android:id="@+id/button17"
+                android:id="@+id/cyanTextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:onClick="processButtons"
+                android:text="cyan" />
         </LinearLayout>
 
         <com.rtugeek.android.colorseekbar.ColorSeekBar
             android:id="@+id/textColourPicker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
