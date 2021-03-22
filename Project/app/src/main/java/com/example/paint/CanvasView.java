@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +30,7 @@ public class CanvasView extends View {
     private HashMap<Integer, Path> pathMap;
     private HashMap<Integer, Point> previousPointMap;
     private String selectedPaintTool, selectedShapeTool, selectedTool, text;
+    private Point start;
 
 
     public CanvasView(Context context, @Nullable AttributeSet attrs)
@@ -40,6 +42,7 @@ public class CanvasView extends View {
         previousPointMap = new HashMap<>();
         textPaint = new Paint();
         shapePaint = new Paint();
+        start = new Point();
     }
 
     @Override
@@ -79,7 +82,7 @@ public class CanvasView extends View {
         }
         else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
         {
-            touchStopped(event.getPointerId(actionIndex));
+            touchStopped(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
         }
         else
         {
@@ -96,7 +99,7 @@ public class CanvasView extends View {
         Path path;
         Point point;
 
-        if(selectedTool.equals("paint") || selectedTool.equals("shape"))
+        if(selectedTool.equals("paint"))
         {
             if(pathMap.containsKey(pointerID))
             {
@@ -126,12 +129,15 @@ public class CanvasView extends View {
         }
         else if(selectedTool.equals("shape"))
         {
-            
+            start.x = (int) x;
+            start.y = (int) y;
         }
     }
 
-    private void touchStopped(int pointerID)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void touchStopped(float x, float y, int pointerID)
     {
+        Point point;
         if(selectedTool.equals("paint"))
         {
             Path path = pathMap.get(pointerID);
@@ -140,11 +146,58 @@ public class CanvasView extends View {
         }
         if(selectedTool.equals("shape"))
         {
+            point = new Point();
+
+            point.x = (int)x;
+            point.y = (int)y;
+
+            if(selectedShapeTool.equals("Line")){bitmapCanvas.drawLine(start.x, start.y, point.x, point.y, shapePaint);}
+
+            else if(selectedShapeTool.equals("Arrow"))
+            {
+                Path path = new Path();
+                Point perpendicular = new Point();
+                perpendicular.x = (point.x - start.x)/10;
+                perpendicular.y = (point.y - start.y)/10;
+
+                path.moveTo(start.x, start.y);
+                path.lineTo(point.x - perpendicular.x, point.y - perpendicular.y);
+                path.lineTo((point.x - perpendicular.x)  - perpendicular.y, (point.y - perpendicular.y) + perpendicular.x);
+                path.lineTo(point.x , point.y);
+                path.lineTo((point.x - perpendicular.x) + perpendicular.y, (point.y - perpendicular.y) - perpendicular.x);
+                path.lineTo(point.x - perpendicular.x, point.y - perpendicular.y);
+
+                bitmapCanvas.drawPath(path, shapePaint);
+
+            }
+            else if(selectedShapeTool.equals("Circle"))
+            {
+                float centreX = (float) start.x;
+                float centreY = (float) start.y;
+                float radius = (float)Math.sqrt((point.x - start.x) * (point.x - start.x) + (point.y - start.y) * (point.y - start.y));
+                bitmapCanvas.drawOval(start.x, start.y, point.x, point.y , shapePaint);
+            }
+            else if(selectedShapeTool.equals("Triangle"))
+            {
+                Point point2 = new Point();
+                Path path = new Path();
+
+                if(point.x < start.x) {point2.x = start.x + (Math.abs(point.x - start.x)); }
+                else{point2.x = start.x - (Math.abs(point.x - start.x));}
+                point2.y = point.y;
+
+                path.moveTo(start.x, start.y);
+                path.lineTo(point.x, point.y);
+                path.lineTo(point2.x, point2.y);
+                path.lineTo(start.x, start.y);
+                bitmapCanvas.drawPath(path, shapePaint);
+            }
+            else if(selectedShapeTool.equals("Square")){bitmapCanvas.drawRect(start.x, start.y, point.x, point.y, shapePaint);}
+
+
 
         }
     }
-
-
 
     private void touchMoved(MotionEvent event)
     {

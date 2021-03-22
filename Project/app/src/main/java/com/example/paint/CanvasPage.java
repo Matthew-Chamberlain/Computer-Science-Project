@@ -39,6 +39,7 @@ public class CanvasPage extends AppCompatActivity {
         canvas = findViewById(R.id.canvasView);
         canvas.setSelectedTool("paint");
         canvas.setPaintTool("Paint Brush");
+        canvas.setShapeTool("Line");
 
         paintTool = new Paint();
         textTool = new Paint();
@@ -52,7 +53,7 @@ public class CanvasPage extends AppCompatActivity {
 
         shapeTool.setColor(Color.BLACK);
         shapeTool.setStrokeWidth(7);
-        paintTool.setStyle(Paint.Style.STROKE);
+        shapeTool.setStyle(Paint.Style.STROKE);
 
         textTool.setColor(Color.BLACK);
         textTool.setTextSize(11);
@@ -65,6 +66,7 @@ public class CanvasPage extends AppCompatActivity {
 
         canvas.updatePaint(paintTool);
         canvas.updateText(textTool, text);
+        canvas.updateShape(shapeTool);
 
 
         paintDropDown = findViewById(R.id.paintToolsDropDown);
@@ -77,11 +79,15 @@ public class CanvasPage extends AppCompatActivity {
         setUpSliders(transparencySlider);
         SeekBar textSizeSlider = findViewById(R.id.textSizeSlider);
         setUpSliders(textSizeSlider);
+        SeekBar shapeThicknessSlider = findViewById(R.id.shapeSizeSlider);
+        setUpSliders(shapeThicknessSlider);
 
         ColorSeekBar paintColourPicker = findViewById(R.id.paintColourPicker);
         colourSliders(paintColourPicker);
         ColorSeekBar textColourPicker = findViewById(R.id.textColourPicker);
         colourSliders(textColourPicker);
+        ColorSeekBar shapeColourPicker = findViewById(R.id.shapeColourPicker);
+        colourSliders(shapeColourPicker);
 
         fontDropDown = (Spinner) findViewById(R.id.fontDropDown);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.fonts, android.R.layout.simple_spinner_item);
@@ -445,7 +451,7 @@ public class CanvasPage extends AppCompatActivity {
                 else if(slider.getId() == R.id.shapeSizeSlider)
                 {
                     TextView shapeSizeText = (TextView)findViewById(R.id.shapeSizeText);
-                    shapeSizeText.setText("Size " + progress);
+                    shapeSizeText.setText("Thickness " + progress);
                     shapeTool.setStrokeWidth(progress);
                 }
                 else if(slider.getId() == R.id.textSizeSlider)
