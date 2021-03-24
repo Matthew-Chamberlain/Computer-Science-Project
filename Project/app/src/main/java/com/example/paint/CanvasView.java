@@ -3,9 +3,10 @@ package com.example.paint;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
-import android.app.ActionBar;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,8 +14,17 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -70,6 +80,7 @@ public class CanvasView extends View {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
@@ -239,6 +250,57 @@ public class CanvasView extends View {
         previousPointMap.clear();
         bitmap.eraseColor(Color.WHITE);
         invalidate();
+    }
+
+    public void saveImage()
+    {
+        ContextWrapper wrapper = new ContextWrapper(getContext());
+        String fileName = "Paint" + System.currentTimeMillis();
+
+        File directory = wrapper.getDir("imageDir", Context.MODE_PRIVATE);
+       //if(!directory.exists()){directory.mkdirs();}
+
+        File myPath = new File(directory, fileName + ".jpeg");
+
+
+        FileOutputStream outputStream = null;
+        try
+        {
+            outputStream = new FileOutputStream(myPath);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                outputStream.flush();
+                outputStream.close();
+
+                Toast message = Toast.makeText(getContext(), myPath.getAbsolutePath(), Toast.LENGTH_LONG);
+                message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
+                message.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        loadImage(myPath.getAbsolutePath());
+    }
+
+    public void loadImage(String path)
+    {
+        ImageView image1 = findViewById(R.id.imageView2);
+        try
+        {
+            File file = new File(path, "Paint.jpeg");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(file));
+            image1.setImageBitmap(b);
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void updatePaint(Paint paint)

@@ -3,24 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.paint">
 
+    <uses-permission android:name="android.permission.WRITE_INTE_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true"
-        android:xlargeScreens="true"
-        ></supports-screens>
-
+        android:xlargeScreens="true" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:screenOrientation="portrait"
         tools:ignore="LockedOrientationActivity">
-        <activity android:name=".CanvasPage"></activity>
+        <activity android:name=".ImagePreview"></activity>
+        <activity android:name=".CanvasPage" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -19,14 +20,12 @@ import android.widget.TextView;
 
 import com.rtugeek.android.colorseekbar.ColorSeekBar;
 
-import org.w3c.dom.Text;
-
 public class CanvasPage extends AppCompatActivity {
 
     private CanvasView canvas;
     private Paint paintTool, textTool, shapeTool;
     private String text, font;
-    private ConstraintLayout paintDropDown, shapeDropDown, textDropDown;
+
     private Spinner fontDropDown;
     private boolean bold, italic, underline, strikeThrough;
 
@@ -67,11 +66,6 @@ public class CanvasPage extends AppCompatActivity {
         canvas.updatePaint(paintTool);
         canvas.updateText(textTool, text);
         canvas.updateShape(shapeTool);
-
-
-        paintDropDown = findViewById(R.id.paintToolsDropDown);
-        shapeDropDown = findViewById(R.id.shapeToolsDropDown);
-        textDropDown = findViewById(R.id.textToolsDropDown);
 
         SeekBar paintSizeSlider = findViewById(R.id.paintSizeSlider);
         setUpSliders(paintSizeSlider);
@@ -125,23 +119,25 @@ public class CanvasPage extends AppCompatActivity {
         });
     }
 
-    public void hideUI(View view)
-    {
-        ConstraintLayout topBar = (ConstraintLayout)findViewById(R.id.drawingToolsBar);
-        ConstraintLayout bottomBar = (ConstraintLayout)findViewById(R.id.systemToolsBar);
-        topBar.setVisibility(View.INVISIBLE);
-        bottomBar.setVisibility(View.INVISIBLE);
-    }
-
     public void processButtons(View myView)
     {
         TextView selectedPaintTool = (TextView)findViewById(R.id.selectedPaintTool);
         TextView selectedShapeTool = (TextView)findViewById(R.id.selectedShapeTool);
+        ConstraintLayout paintDropDown, shapeDropDown, extraToolsDropDown, textDropDown, topBar, bottomBar;
+
+        paintDropDown = findViewById(R.id.paintToolsDropDown);
+        shapeDropDown = findViewById(R.id.shapeToolsDropDown);
+        textDropDown = findViewById(R.id.textToolsDropDown);
+        extraToolsDropDown = findViewById(R.id.extraToolsDropDown);
+        topBar = findViewById(R.id.drawingToolsBar);
+        bottomBar = findViewById(R.id.systemToolsBar);
+
         switch(myView.getId())
         {
             case R.id.paintTool:
                 shapeDropDown.setVisibility(View.INVISIBLE);
                 textDropDown.setVisibility(View.INVISIBLE);
+                extraToolsDropDown.setVisibility(View.INVISIBLE);
                 if(canvas.getSelectedTool().equals("paint"))
                 {
                     if(paintDropDown.getVisibility() == View.INVISIBLE){paintDropDown.setVisibility(View.VISIBLE);}
@@ -156,6 +152,7 @@ public class CanvasPage extends AppCompatActivity {
             case R.id.shapeTool:
                 paintDropDown.setVisibility(View.INVISIBLE);
                 textDropDown.setVisibility(View.INVISIBLE);
+                extraToolsDropDown.setVisibility(View.INVISIBLE);
                 if(canvas.getSelectedTool().equals("shape"))
                 {
                     if(shapeDropDown.getVisibility() == View.INVISIBLE){shapeDropDown.setVisibility(View.VISIBLE);}
@@ -170,6 +167,7 @@ public class CanvasPage extends AppCompatActivity {
             case R.id.textTool:
                 shapeDropDown.setVisibility(View.INVISIBLE);
                 paintDropDown.setVisibility(View.INVISIBLE);
+                extraToolsDropDown.setVisibility(View.INVISIBLE);
                 if(canvas.getSelectedTool().equals("text"))
                 {
 
@@ -181,6 +179,36 @@ public class CanvasPage extends AppCompatActivity {
                     canvas.setSelectedTool("text");
                 }
                 break;
+
+            case R.id.extraTools:
+                shapeDropDown.setVisibility(View.INVISIBLE);
+                paintDropDown.setVisibility(View.INVISIBLE);
+                textDropDown.setVisibility(View.INVISIBLE);
+                canvas.setSelectedTool("extra");
+                if(extraToolsDropDown.getVisibility() == View.INVISIBLE){extraToolsDropDown.setVisibility(View.VISIBLE);}
+                else{extraToolsDropDown.setVisibility(View.INVISIBLE);}
+                break;
+
+            case R.id.saveButton:
+                canvas.saveImage();
+
+            case R.id.undoButton:
+                break;
+
+            case R.id.redoButton:
+                break;
+
+            case R.id.hideUIButton:
+                topBar.setVisibility(View.INVISIBLE);
+                bottomBar.setVisibility(View.INVISIBLE);
+                Button showUIButton = (Button)findViewById(R.id.showUIButton);
+                showUIButton.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.showUIButton:
+                topBar.setVisibility(View.VISIBLE);
+                bottomBar.setVisibility(View.VISIBLE);
+                myView.setVisibility(View.GONE);
 
             case R.id.paintBrush:
                 selectedPaintTool.setText("Paint Brush");
@@ -426,6 +454,15 @@ public class CanvasPage extends AppCompatActivity {
             case R.id.cyanTextButton:
                 textTool.setColor(Color.CYAN);
                 canvas.updateText(textTool,  text);
+                break;
+
+            case R.id.clearCanvasButton:
+                canvas.clearMap();
+
+            case R.id.importImageButton:
+                break;
+
+            case R.id.cameraButton:
                 break;
         }
 
