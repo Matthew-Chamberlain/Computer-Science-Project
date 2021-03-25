@@ -3,12 +3,14 @@ package com.example.paint;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,7 +26,7 @@ public class CanvasPage extends AppCompatActivity {
 
     private CanvasView canvas;
     private Paint paintTool, textTool, shapeTool;
-    private String text, font;
+    private String text, font, path;
 
     private Spinner fontDropDown;
     private boolean bold, italic, underline, strikeThrough;
@@ -35,10 +37,19 @@ public class CanvasPage extends AppCompatActivity {
         setContentView(R.layout.activity_canvas_page);
         getSupportActionBar().hide();
 
+        Intent intent = getIntent();
+        path = intent.getExtras().getString("Edit");
+
+
         canvas = findViewById(R.id.canvasView);
         canvas.setSelectedTool("paint");
         canvas.setPaintTool("Paint Brush");
         canvas.setShapeTool("Line");
+
+        if(path.equalsIgnoreCase("") == false)
+        {
+            canvas.loadImage(path);
+        }
 
         paintTool = new Paint();
         textTool = new Paint();
@@ -191,6 +202,11 @@ public class CanvasPage extends AppCompatActivity {
 
             case R.id.saveButton:
                 canvas.saveImage();
+                MainActivity.mainMenu.finish();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+                finish();
+
 
             case R.id.undoButton:
                 break;

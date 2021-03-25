@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi;
 
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -12,8 +13,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +45,7 @@ public class CanvasView extends View {
     private Paint paintLine, textPaint, shapePaint;
     private HashMap<Integer, Path> pathMap;
     private HashMap<Integer, Point> previousPointMap;
-    private String selectedPaintTool, selectedShapeTool, selectedTool, text;
+    private String selectedPaintTool, selectedShapeTool, selectedTool, text, path;
     private Point start;
 
 
@@ -53,6 +59,7 @@ public class CanvasView extends View {
         textPaint = new Paint();
         shapePaint = new Paint();
         start = new Point();
+        path = "";
     }
 
     @Override
@@ -259,8 +266,16 @@ public class CanvasView extends View {
 
         File directory = wrapper.getDir("imageDir", Context.MODE_PRIVATE);
        //if(!directory.exists()){directory.mkdirs();}
+        File myPath;
+        if(path.equalsIgnoreCase("") == false)
+        {
+            myPath = new File(path);
+        }
+        else
+        {
+            myPath = new File(directory, fileName + ".jpeg");
+        }
 
-        File myPath = new File(directory, fileName + ".jpeg");
 
 
         FileOutputStream outputStream = null;
@@ -278,29 +293,19 @@ public class CanvasView extends View {
                 outputStream.flush();
                 outputStream.close();
 
-                Toast message = Toast.makeText(getContext(), myPath.getAbsolutePath(), Toast.LENGTH_LONG);
+                Toast message = Toast.makeText(getContext(), "Image Saved", Toast.LENGTH_LONG);
                 message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
                 message.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        loadImage(myPath.getAbsolutePath());
+
     }
 
-    public void loadImage(String path)
+    public void loadImage(String pth)
     {
-        ImageView image1 = findViewById(R.id.imageView2);
-        try
-        {
-            File file = new File(path, "Paint.jpeg");
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(file));
-            image1.setImageBitmap(b);
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
+        path = pth;
     }
 
     public void updatePaint(Paint paint)

@@ -3,6 +3,7 @@ package com.example.paint;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -34,6 +35,8 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     LinkedHashMap<File, ImageView> imageList;
+    Bitmap bitmap;
+    public static Activity mainMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setTitle("Previous Drawings");
 
+        mainMenu = this;
         imageList = new LinkedHashMap<File, ImageView>();
         imageViews();
     }
@@ -60,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         if(item.getItemId() == R.id.blankCanvasButton)
         {
             Intent intent = new Intent(this, CanvasPage.class);
+            intent.putExtra("Edit", "");
             startActivity(intent);
         }
         if(item.getItemId() == R.id.importImageButton)
@@ -83,7 +88,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < images.length; i++) {
             ImageView tempImage = new ImageView(this);
             File myPath = new File(directory, images[i].getName());
-            //Log.d("File path", myPath.toString());
             tempImage.setImageDrawable(Drawable.createFromPath(myPath.toString()));
             imageList.put(myPath, tempImage);
         }
@@ -95,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
             rows = imageList.size()/3;
         }
         List<ImageView> thumbnails = new ArrayList<ImageView>(imageList.values());
+
         Collections.reverse(thumbnails);
         for(int i = 0; i < rows; i++)
         {
@@ -105,11 +110,12 @@ public class MainActivity extends AppCompatActivity {
             for(int j = 0;  j < 3; j++)
            {
                 ImageView tempImage = new ImageView(this);
-
                 tempImage.setImageDrawable(thumbnails.get(count).getDrawable());
                 //tempImage.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
-                row.addView(tempImage);
                 tempImage.setOnClickListener(onClick);
+
+                row.addView(tempImage);
+                //tempImage.setOnClickListener(onClick);
                 count++;
                 if(count == thumbnails.size())
                 {
@@ -118,12 +124,6 @@ public class MainActivity extends AppCompatActivity {
 
            }
         }
-
-
-        //imageFilePath = Uri.parse(myPath.toString());
-        //Bitmap b = BitmapFactory.decodeFile("/data/user/0/com.example.paint/app_image_Dir/Paint.jpeg");
-
-
     }
 
     private View.OnClickListener onClick = new View.OnClickListener() {
@@ -132,24 +132,16 @@ public class MainActivity extends AppCompatActivity {
 
             String path = "";
             ImageView image = (ImageView)myView;
-            Bitmap b1 = ((BitmapDrawable)image.getDrawable()).getBitmap();
+            //Bitmap b1 = ((BitmapDrawable)image.getDrawable()).getBitmap();
             for(Map.Entry<File, ImageView> entry: imageList.entrySet())
             {
                 File key = entry.getKey();
                 ImageView value = entry.getValue();
-                Bitmap b2 = ((BitmapDrawable)value.getDrawable()).getBitmap();
-
-                Log.d("File Path", key.toString());
-
-                if(b1 == b2);
+                if(image.getDrawable().equals(value.getDrawable()))
                 {
                     path = key.toString();
                 }
             }
-
-            Log.d("File Path", image.toString());
-            //image.setDrawingCacheEnabled(true);
-            //Bitmap b = image.getDrawingCache();
 
             Intent intent = new Intent(getApplicationContext(), ImagePreview.class);
             intent.putExtra("preview", path);
