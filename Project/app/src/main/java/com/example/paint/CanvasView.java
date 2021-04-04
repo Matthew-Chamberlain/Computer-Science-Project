@@ -5,7 +5,6 @@ import androidx.annotation.RequiresApi;
 
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,27 +12,23 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 public class CanvasView extends View {
 
@@ -45,30 +40,39 @@ public class CanvasView extends View {
     private Paint paintLine, textPaint, shapePaint;
     private HashMap<Integer, Path> pathMap;
     private HashMap<Integer, Point> previousPointMap;
+    private ArrayList<Bitmap> bitmapList;
+    private ArrayList<Bitmap> undoList;
     private String selectedPaintTool, selectedShapeTool, selectedTool, text, path;
+    private int recentpathId;
+
     private Point start;
 
 
     public CanvasView(Context context, @Nullable AttributeSet attrs)
     {
         super(context, attrs);
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float dpHeight = displayMetrics.heightPixels;
+        float dpWidth = displayMetrics.widthPixels;
+
         paintToScreen = new Paint();
         paintLine = new Paint();
         pathMap = new HashMap<>();
         previousPointMap = new HashMap<>();
+        bitmapList = new ArrayList<>();
+        undoList = new ArrayList<>();
         textPaint = new Paint();
         shapePaint = new Paint();
         start = new Point();
         path = "";
-    }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh)
-    {
-        bitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap((int)dpWidth, (int)dpHeight, Bitmap.Config.ARGB_8888);
         bitmapCanvas = new Canvas(bitmap);
         bitmap.eraseColor(Color.WHITE);
+        bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
     }
+
 
     @Override
     protected void onDraw(Canvas canvas)
@@ -96,11 +100,17 @@ public class CanvasView extends View {
 
         if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_UP)
         {
+
+
             touchBegin(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
         }
         else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
         {
             touchStopped(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
+            bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
+            if(bitmapList.size() > 8){bitmapList.remove(0);}
+            Log.d("List Size", ""+ (bitmapList.size()-1));
+            undoList.clear();
         }
         else
         {
@@ -169,7 +179,11 @@ public class CanvasView extends View {
             point.x = (int)x;
             point.y = (int)y;
 
-            if(selectedShapeTool.equals("Line")){bitmapCanvas.drawLine(start.x, start.y, point.x, point.y, shapePaint);}
+            if(selectedShapeTool.equals("Line"))
+            {
+                //undoList.add(bitmap);
+                bitmapCanvas.drawLine(start.x, start.y, point.x, point.y, shapePaint);
+            }
 
             else if(selectedShapeTool.equals("Arrow"))
             {
@@ -185,6 +199,7 @@ public class CanvasView extends View {
                 path.lineTo((point.x - perpendicular.x) + perpendicular.y, (point.y - perpendicular.y) - perpendicular.x);
                 path.lineTo(point.x - perpendicular.x, point.y - perpendicular.y);
 
+                //undoList.add(bitmap);
                 bitmapCanvas.drawPath(path, shapePaint);
 
             }
@@ -193,6 +208,7 @@ public class CanvasView extends View {
                 float centreX = (float) start.x;
                 float centreY = (float) start.y;
                 float radius = (float)Math.sqrt((point.x - start.x) * (point.x - start.x) + (point.y - start.y) * (point.y - start.y));
+                //undoList.add(bitmap);
                 bitmapCanvas.drawOval(start.x, start.y, point.x, point.y , shapePaint);
             }
             else if(selectedShapeTool.equals("Triangle"))
@@ -208,9 +224,14 @@ public class CanvasView extends View {
                 path.lineTo(point.x, point.y);
                 path.lineTo(point2.x, point2.y);
                 path.lineTo(start.x, start.y);
+                //undoList.add(bitmap);
                 bitmapCanvas.drawPath(path, shapePaint);
             }
-            else if(selectedShapeTool.equals("Square")){bitmapCanvas.drawRect(start.x, start.y, point.x, point.y, shapePaint);}
+            else if(selectedShapeTool.equals("Square"))
+            {
+                //undoList.add(bitmap);
+                bitmapCanvas.drawRect(start.x, start.y, point.x, point.y, shapePaint);
+            }
 
 
 
@@ -293,7 +314,7 @@ public class CanvasView extends View {
                 outputStream.flush();
                 outputStream.close();
 
-                Toast message = Toast.makeText(getContext(), "Image Saved", Toast.LENGTH_LONG);
+                Toast message = Toast.makeText(getContext(), "Image Saved", Toast.LENGTH_SHORT);
                 message.setGravity(Gravity.CENTER, message.getXOffset() / 2, message.getYOffset() / 2);
                 message.show();
             } catch (IOException e) {
@@ -306,6 +327,9 @@ public class CanvasView extends View {
     public void loadImage(String pth)
     {
         path = pth;
+        File file = new File(path);
+        bitmapCanvas.drawBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), 0,0, null);
+        //invalidate();
     }
 
     public void updatePaint(Paint paint)
@@ -383,6 +407,30 @@ public class CanvasView extends View {
                     q.add(new Point(e.x, e.y + 1));
                 e.x++;
             }
+        }
+    }
+
+    public void undo()
+    {
+        Log.d("List Size", ""+ (bitmapList.size()-1));
+        if(bitmapList.size() > 1)
+        {
+            undoList.add(bitmapList.remove(bitmapList.size()-1));
+            bitmap = bitmapList.get(bitmapList.size()-1).copy(bitmap.getConfig(), bitmap.isMutable());
+            bitmapCanvas = new Canvas(bitmap);
+            invalidate();
+        }
+    }
+
+    public void redo()
+    {
+        Log.d("List Size", ""+ (undoList.size()-1));
+        if (undoList.size() > 0)
+        {
+            bitmapList.add(undoList.remove(undoList.size()-1));
+            bitmap = bitmapList.get(bitmapList.size()-1).copy(bitmap.getConfig(), bitmap.isMutable());
+            bitmapCanvas = new Canvas(bitmap);
+            invalidate();
         }
     }
 }

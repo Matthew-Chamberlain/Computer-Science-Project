@@ -4,17 +4,17 @@
 
     <item
         android:id="@+id/blankCanvasButton"
-        android:icon="@android:drawable/ic_menu_edit"
+        android:icon="@drawable/ic_new_image"
         android:title="create new drawing"
         app:showAsAction="always" />
     <item
         android:id="@+id/importImageButton"
-        android:icon="@android:drawable/ic_menu_gallery"
+        android:icon="@drawable/ic_import_image"
         android:title="import Image"
         app:showAsAction="always" />
     <item
         android:id="@+id/cameraButton"
-        android:icon="@android:drawable/ic_menu_camera"
+        android:icon="@drawable/ic_camera"
         android:title="Use Camera"
         app:showAsAction="always" />
 </menu>

@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
+    android:foregroundGravity="center"
     android:visibility="visible"
     tools:context=".CanvasPage"
     tools:visibility="visible">
@@ -21,16 +22,16 @@
 
     </com.example.paint.CanvasView>
 
-    <Button
+    <ImageButton
         android:id="@+id/showUIButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:alpha="100"
+        android:background="#FFFFFF"
         android:onClick="processButtons"
-        android:text="show UI"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_show"
         tools:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,46 +43,104 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/paintTool"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/paintBackground"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:onClick="processButtons"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#D5D5D5"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:weightSum="1"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/shapeBackground"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/shapeTool"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="processButtons"
-            app:layout_constraintEnd_toStartOf="@+id/textTool"
+            <ImageButton
+                android:id="@+id/paintTool"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="#00FFFFFF"
+                android:onClick="processButtons"
+                android:scaleType="fitXY"
+                android:scaleX="1.3"
+                android:scaleY="1.3"
+                app:srcCompat="@drawable/ic_bx_paint_2" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/shapeBackground"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#D5D5D5"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:weightSum="0"
+            app:layout_constraintEnd_toStartOf="@+id/textBackground"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/paintTool"
-            app:layout_constraintTop_toTopOf="@id/paintTool"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            app:layout_constraintStart_toEndOf="@+id/paintBackground"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/textTool"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="processButtons"
-            app:layout_constraintEnd_toStartOf="@+id/extraTools"
+            <ImageButton
+                android:id="@+id/shapeTool"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="#00FFFFFF"
+                android:onClick="processButtons"
+                app:srcCompat="@drawable/ic_circle" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/textBackground"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="#D5D5D5"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="0"
+            app:layout_constraintEnd_toStartOf="@+id/linearLayout9"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/shapeTool"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            app:layout_constraintStart_toEndOf="@+id/shapeBackground"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/extraTools"
+            <ImageButton
+                android:id="@+id/textTool"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="#00FFFFFF"
+                android:onClick="processButtons"
+                app:srcCompat="@drawable/ic_text_tool" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout9"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="processButtons"
+            android:layout_height="match_parent"
+            android:background="#D5D5D5"
+            android:orientation="horizontal"
+            android:weightSum="4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textBackground"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/extraTools"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="#00FFFFFF"
+                android:onClick="processButtons"
+                app:srcCompat="@drawable/ic_more_tools" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -95,50 +154,53 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="visible">
 
-        <Button
+        <ImageButton
             android:id="@+id/saveButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
             android:onClick="processButtons"
-            android:text="Save"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintEnd_toStartOf="@+id/undoButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_save" />
 
-        <Button
+        <ImageButton
             android:id="@+id/undoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
+            android:background="#00FFFFFF"
             android:onClick="processButtons"
-            android:text="Undo"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/redoButton"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/saveButton" />
+            app:layout_constraintStart_toEndOf="@+id/saveButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_undo" />
 
-        <Button
+        <ImageButton
             android:id="@+id/redoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
+            android:background="#00FFFFFF"
             android:onClick="processButtons"
-            android:text="Redo"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/hideUIButton"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/undoButton" />
+            app:layout_constraintStart_toEndOf="@+id/undoButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_redo" />
 
-        <Button
+        <ImageButton
             android:id="@+id/hideUIButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#00FFFFFF"
             android:onClick="processButtons"
-            android:text="hide UI"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/redoButton"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_hide" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -185,45 +247,53 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/preview">
 
-            <Button
+            <ImageButton
                 android:id="@+id/paintBrush"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
                 android:onClick="processButtons"
-                android:text="Paint"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/sprayCan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="processButtons"
-                android:text="Spray"
-                app:layout_constraintEnd_toStartOf="@+id/eraser"
+                app:layout_constraintEnd_toStartOf="@+id/fillBucket"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/fillBucket"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_paint_brush" />
 
-            <Button
-                android:id="@+id/eraser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="processButtons"
-                android:text="Eraser"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
+            <ImageButton
                 android:id="@+id/fillBucket"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
                 android:onClick="processButtons"
-                android:text="Fill"
                 app:layout_constraintEnd_toStartOf="@+id/sprayCan"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/paintBrush"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_color_fill" />
+
+            <ImageButton
+                android:id="@+id/sprayCan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:onClick="processButtons"
+                app:layout_constraintEnd_toStartOf="@+id/eraser"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/fillBucket"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_spray_can" />
+
+            <ImageButton
+                android:id="@+id/eraser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:onClick="processButtons"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/sprayCan"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_eraser" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
@@ -707,45 +777,53 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5">
 
-            <Button
+            <ImageButton
                 android:id="@+id/boldButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
                 android:onClick="processButtons"
-                android:text="Bold"
+                app:layout_constraintEnd_toStartOf="@+id/italicButton"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_bold" />
 
-            <Button
+            <ImageButton
                 android:id="@+id/italicButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
                 android:onClick="processButtons"
-                android:text="italic"
                 app:layout_constraintEnd_toStartOf="@+id/underlineButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/boldButton"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_italic" />
 
-            <Button
-                android:id="@+id/strikethroughButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="processButtons"
-                android:text="Strike"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
+            <ImageButton
                 android:id="@+id/underlineButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
                 android:onClick="processButtons"
-                android:text="under"
                 app:layout_constraintEnd_toStartOf="@+id/strikethroughButton"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/italicButton"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_underline" />
+
+            <ImageButton
+                android:id="@+id/strikethroughButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#00FFFFFF"
+                android:onClick="processButtons"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/underlineButton"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_strikethrough" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -952,19 +1030,20 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/drawingToolsBar"
         tools:visibility="invisible">
 
-        <Button
+        <ImageButton
             android:id="@+id/clearCanvasButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="processButtons"
-            android:text="clear"
+            android:background="#00FFFFFF"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_clear" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

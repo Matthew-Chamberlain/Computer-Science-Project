@@ -1,18 +1,22 @@
 package com.example.paint;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -35,7 +40,6 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     LinkedHashMap<File, ImageView> imageList;
-    Bitmap bitmap;
     public static Activity mainMenu;
 
     @Override
@@ -69,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
         }
         if(item.getItemId() == R.id.importImageButton)
         {
-
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickPhoto.setType("image/*");
+            startActivityForResult(Intent.createChooser(pickPhoto, "Select Picture"), 0);
         }
         if(item.getItemId() == R.id.cameraButton)
         {
@@ -104,18 +110,17 @@ public class MainActivity extends AppCompatActivity {
         for(int i = 0; i < rows; i++)
         {
             TableRow row = new TableRow(this);
-            //row.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
+            row.setLayoutParams(new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT));
             table.addView(row);
 
             for(int j = 0;  j < 3; j++)
            {
                 ImageView tempImage = new ImageView(this);
                 tempImage.setImageDrawable(thumbnails.get(count).getDrawable());
-                //tempImage.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+                tempImage.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
                 tempImage.setOnClickListener(onClick);
 
                 row.addView(tempImage);
-                //tempImage.setOnClickListener(onClick);
                 count++;
                 if(count == thumbnails.size())
                 {
@@ -148,4 +153,41 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == 0) {
+                    Uri selectedImageUri = data.getData();
+                    // Get the path from the Uri
+                    final String path = getPathFromURI(selectedImageUri);
+                    if (path != null) {
+                        File f = new File(path);
+                        selectedImageUri = Uri.fromFile(f);
+                    }
+
+                    Intent intent = new Intent(this, CanvasPage.class);
+                    intent.putExtra("Edit", selectedImageUri.getPath());
+                    startActivity(intent);
+                }
+            }
+        } catch (Exception e) {
+            Log.e("FileSelectorActivity", "File select error", e);
+        }
+    }
+
+    public String getPathFromURI(Uri contentUri) {
+        String res = null;
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if (cursor.moveToFirst()) {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+        cursor.close();
+        return res;
+    }
+
 }

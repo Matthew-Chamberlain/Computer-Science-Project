@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -134,6 +135,11 @@ public class CanvasPage extends AppCompatActivity {
     {
         TextView selectedPaintTool = (TextView)findViewById(R.id.selectedPaintTool);
         TextView selectedShapeTool = (TextView)findViewById(R.id.selectedShapeTool);
+
+        ImageButton paintIcon = findViewById(R.id.paintTool);
+        ImageButton shapeIcon = findViewById(R.id.shapeTool);
+        //ImageButton textIcon = findViewById(R.id.textTool);
+
         ConstraintLayout paintDropDown, shapeDropDown, extraToolsDropDown, textDropDown, topBar, bottomBar;
 
         paintDropDown = findViewById(R.id.paintToolsDropDown);
@@ -143,12 +149,14 @@ public class CanvasPage extends AppCompatActivity {
         topBar = findViewById(R.id.drawingToolsBar);
         bottomBar = findViewById(R.id.systemToolsBar);
 
+
         switch(myView.getId())
         {
             case R.id.paintTool:
                 shapeDropDown.setVisibility(View.INVISIBLE);
                 textDropDown.setVisibility(View.INVISIBLE);
                 extraToolsDropDown.setVisibility(View.INVISIBLE);
+
                 if(canvas.getSelectedTool().equals("paint"))
                 {
                     if(paintDropDown.getVisibility() == View.INVISIBLE){paintDropDown.setVisibility(View.VISIBLE);}
@@ -209,15 +217,17 @@ public class CanvasPage extends AppCompatActivity {
 
 
             case R.id.undoButton:
+                canvas.undo();
                 break;
 
             case R.id.redoButton:
+                canvas.redo();
                 break;
 
             case R.id.hideUIButton:
                 topBar.setVisibility(View.INVISIBLE);
                 bottomBar.setVisibility(View.INVISIBLE);
-                Button showUIButton = (Button)findViewById(R.id.showUIButton);
+                ImageButton showUIButton = findViewById(R.id.showUIButton);
                 showUIButton.setVisibility(View.VISIBLE);
                 break;
 
@@ -227,24 +237,28 @@ public class CanvasPage extends AppCompatActivity {
                 myView.setVisibility(View.GONE);
 
             case R.id.paintBrush:
+                paintIcon.setImageResource(R.drawable.ic_paint_brush);
                 selectedPaintTool.setText("Paint Brush");
                 canvas.setPaintTool("Paint Brush");
                 canvas.updatePaint(paintTool);
                 break;
 
             case R.id.sprayCan:
+                paintIcon.setImageResource(R.drawable.ic_spray_can);
                 selectedPaintTool.setText("Spray Can");
                 canvas.setPaintTool("Spray Can");
                 canvas.updatePaint(paintTool);
                 break;
 
             case R.id.fillBucket:
+                paintIcon.setImageResource(R.drawable.ic_color_fill);
                 selectedPaintTool.setText("Fill Bucket");
                 canvas.setPaintTool("Fill Bucket");
                 canvas.updatePaint(paintTool);
                 break;
 
             case R.id.eraser:
+                paintIcon.setImageResource(R.drawable.ic_eraser);
                 selectedPaintTool.setText("Eraser");
                 canvas.setPaintTool("Eraser");
                 canvas.updatePaint(paintTool);
