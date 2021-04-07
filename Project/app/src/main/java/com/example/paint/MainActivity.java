@@ -11,12 +11,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Camera;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Previous Drawings");
+        getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">Previous Drawings</font>")));
 
         mainMenu = this;
         imageList = new LinkedHashMap<File, ImageView>();
@@ -77,10 +79,11 @@ public class MainActivity extends AppCompatActivity {
             pickPhoto.setType("image/*");
             startActivityForResult(Intent.createChooser(pickPhoto, "Select Picture"), 0);
         }
-        if(item.getItemId() == R.id.cameraButton)
+        /*if(item.getItemId() == R.id.cameraButton)
         {
-
-        }
+            Intent takePhoto = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(takePhoto, 1);
+        }*/
         return true;
     }
 
@@ -171,6 +174,12 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent = new Intent(this, CanvasPage.class);
                     intent.putExtra("Edit", selectedImageUri.getPath());
                     startActivity(intent);
+                }
+                else if(resultCode == 1)
+                {
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    //Intent intent = new Intent(this, CanvasPage.class);
+                    //intent.putExtra("Bitmap", photo);
                 }
             }
         } catch (Exception e) {

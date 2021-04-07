@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_name">Paint</string>
     <string-array name="fonts">
         <item>sans-serif</item>
         <item>sans-serif-thin</item>

@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -32,7 +33,7 @@ public class ImagePreview extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
-        setTitle("Image Preview");
+        getSupportActionBar().setTitle((Html.fromHtml("<font color=\"#000000\">Image Preview</font>")));
 
         Intent intent = getIntent();
         path = intent.getExtras().getString("preview");

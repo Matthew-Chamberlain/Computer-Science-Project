@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Stack;
 
 public class CanvasView extends View {
@@ -42,9 +44,11 @@ public class CanvasView extends View {
     private HashMap<Integer, Point> previousPointMap;
     private ArrayList<Bitmap> bitmapList;
     private ArrayList<Bitmap> undoList;
-    private String selectedPaintTool, selectedShapeTool, selectedTool, text, path;
+    private String selectedPaintTool, selectedShapeTool, selectedTool, text;
+    public String path;
     private int recentpathId;
-
+    private float dpHeight;
+    private float dpWidth;
     private Point start;
 
 
@@ -53,8 +57,8 @@ public class CanvasView extends View {
         super(context, attrs);
 
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        float dpHeight = displayMetrics.heightPixels;
-        float dpWidth = displayMetrics.widthPixels;
+        dpHeight = displayMetrics.heightPixels;
+        dpWidth = displayMetrics.widthPixels;
 
         paintToScreen = new Paint();
         paintLine = new Paint();
@@ -65,12 +69,12 @@ public class CanvasView extends View {
         textPaint = new Paint();
         shapePaint = new Paint();
         start = new Point();
-        path = "";
 
         bitmap = Bitmap.createBitmap((int)dpWidth, (int)dpHeight, Bitmap.Config.ARGB_8888);
         bitmapCanvas = new Canvas(bitmap);
         bitmap.eraseColor(Color.WHITE);
-        bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
+        //if (path.equals("")){bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));}
+
     }
 
 
@@ -100,17 +104,20 @@ public class CanvasView extends View {
 
         if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_UP)
         {
-
-
+            undoList.clear();
+            //isUndoListEmpty();
             touchBegin(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
         }
         else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP)
         {
             touchStopped(event.getX(actionIndex), event.getY(actionIndex), event.getPointerId(actionIndex));
+
+            if(bitmapList.size() > 5)
+            {
+                bitmapList.remove(0);
+            }
             bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
-            if(bitmapList.size() > 8){bitmapList.remove(0);}
-            Log.d("List Size", ""+ (bitmapList.size()-1));
-            undoList.clear();
+            //isBitmapListEmpty();
         }
         else
         {
@@ -153,7 +160,7 @@ public class CanvasView extends View {
         }
         else if(selectedTool.equals("text"))
         {
-            bitmapCanvas.drawText(text, x, y, textPaint);
+            bitmapCanvas.drawText(text, x - (int)(textPaint.measureText(text)/2), y, textPaint);
         }
         else if(selectedTool.equals("shape"))
         {
@@ -168,9 +175,18 @@ public class CanvasView extends View {
         Point point;
         if(selectedTool.equals("paint"))
         {
-            Path path = pathMap.get(pointerID);
-            bitmapCanvas.drawPath(path, paintLine);
-            path.reset();
+            if(selectedPaintTool.equals("Spray Can"))
+            {
+                Path path = pathMap.get(pointerID);
+                path.reset();
+            }
+            else
+            {
+                Path path = pathMap.get(pointerID);
+                bitmapCanvas.drawPath(path, paintLine);
+                path.reset();
+            }
+
         }
         if(selectedTool.equals("shape"))
         {
@@ -220,10 +236,10 @@ public class CanvasView extends View {
                 else{point2.x = start.x - (Math.abs(point.x - start.x));}
                 point2.y = point.y;
 
-                path.moveTo(start.x, start.y);
+                path.moveTo((start.x + point.x)/2, start.y);
                 path.lineTo(point.x, point.y);
-                path.lineTo(point2.x, point2.y);
-                path.lineTo(start.x, start.y);
+                path.lineTo(start.x, point2.y);
+                path.lineTo((start.x + point.x)/2, start.y);
                 //undoList.add(bitmap);
                 bitmapCanvas.drawPath(path, shapePaint);
             }
@@ -253,6 +269,8 @@ public class CanvasView extends View {
                     newX = event.getX(pointerIndex);
                     newY = event.getY(pointerIndex);
 
+                    Log.d("NewX",  "" + newX);
+                    Log.d("NewY",  "" + newY);
 
                     Path path = pathMap.get(pointerID);
                     Point point = previousPointMap.get(pointerID);
@@ -269,6 +287,21 @@ public class CanvasView extends View {
                     }
                 }
             }
+
+            if(selectedPaintTool.equals("Spray Can"))
+            {
+                newX = event.getX();
+                newY = event.getY();
+                for(int j = 0; j < 5; j++)
+                {
+
+                    Random random = new Random();
+                    int random1 = (int) (newX + random.nextGaussian()*paintLine.getStrokeWidth());
+                    int random2 = (int) (newY + random.nextGaussian()*paintLine.getStrokeWidth());
+
+                    bitmapCanvas.drawPoint(random1, random2, paintLine);
+                }
+            }
         }
     }
 
@@ -278,17 +311,21 @@ public class CanvasView extends View {
         previousPointMap.clear();
         bitmap.eraseColor(Color.WHITE);
         invalidate();
+        bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
     }
 
     public void saveImage()
     {
+        bitmapList.clear();
+        undoList.clear();
+
         ContextWrapper wrapper = new ContextWrapper(getContext());
         String fileName = "Paint" + System.currentTimeMillis();
 
         File directory = wrapper.getDir("imageDir", Context.MODE_PRIVATE);
        //if(!directory.exists()){directory.mkdirs();}
         File myPath;
-        if(path.equalsIgnoreCase("") == false)
+        if(path.contains("/data/user/0/") == true)
         {
             myPath = new File(path);
         }
@@ -304,6 +341,8 @@ public class CanvasView extends View {
         {
             outputStream = new FileOutputStream(myPath);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            bitmap.recycle();
+            bitmap = null;
         }
         catch (Exception e)
         {
@@ -326,10 +365,33 @@ public class CanvasView extends View {
 
     public void loadImage(String pth)
     {
-        path = pth;
-        File file = new File(path);
-        bitmapCanvas.drawBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()), 0,0, null);
-        //invalidate();
+        if(pth.equals(""))
+        {
+            bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
+        }
+        else
+        {
+            File file = new File(pth);
+            Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
+            b = Bitmap.createScaledBitmap(b, (int)dpWidth, (int)dpHeight, false);
+            bitmapCanvas.drawBitmap(b, 0,0, null);
+            bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
+        }
+    }
+
+    /*public void addImage(String pth)
+    {
+        File file = new File(pth);
+        Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
+        b = Bitmap.createScaledBitmap(b, (int)dpWidth, (int)dpHeight, false);
+        bitmapCanvas.drawBitmap(b, 0,0, null);
+        bitmapList.add(bitmap.copy(bitmap.getConfig(),bitmap.isMutable()));
+    }*/
+
+    public void loadPhoto(Bitmap b)
+    {
+        //b = Bitmap.createScaledBitmap(b, (int)dpWidth, (int)dpHeight, false);
+        bitmapCanvas.drawBitmap(b, 0, 0, paintToScreen);
     }
 
     public void updatePaint(Paint paint)
@@ -350,6 +412,8 @@ public class CanvasView extends View {
     {
        selectedPaintTool = tool;
     }
+
+    public String getPaintTool(){return selectedPaintTool;}
 
     public void setShapeTool(String tool)
     {
@@ -412,7 +476,6 @@ public class CanvasView extends View {
 
     public void undo()
     {
-        Log.d("List Size", ""+ (bitmapList.size()-1));
         if(bitmapList.size() > 1)
         {
             undoList.add(bitmapList.remove(bitmapList.size()-1));
@@ -420,11 +483,18 @@ public class CanvasView extends View {
             bitmapCanvas = new Canvas(bitmap);
             invalidate();
         }
+        else
+        {
+            Toast message = Toast.makeText(getContext(), "Unable to undo further", Toast.LENGTH_SHORT);
+            message.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, message.getXOffset() / 2, message.getYOffset() / 2);
+            message.show();
+        }
+        Log.d("List Size", ""+ (bitmapList.size()));
     }
 
     public void redo()
     {
-        Log.d("List Size", ""+ (undoList.size()-1));
+
         if (undoList.size() > 0)
         {
             bitmapList.add(undoList.remove(undoList.size()-1));
@@ -432,5 +502,13 @@ public class CanvasView extends View {
             bitmapCanvas = new Canvas(bitmap);
             invalidate();
         }
+        else
+        {
+            Toast message = Toast.makeText(getContext(), "Nothing to redo", Toast.LENGTH_SHORT);
+            message.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM, message.getXOffset() / 2, message.getYOffset()/2);
+            message.show();
+        }
+        Log.d("List Size", ""+ (undoList.size()));
     }
+
 }
